@@ -33,15 +33,12 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/whatsapp", whatsappRoutes);
 
-// ✅ Mount admin routes
-app.use("/api/admin", adminRoutes);
-
 app.get("/", (_req, res) => {
   res.send("Welcome to the API 🚀");
-});
+}); 
 
 // 404 handler
-app.use((req, res) => {
+app.use((req, res) => {44
   res.status(404).json({
     success: false,
     message: "Route not found",

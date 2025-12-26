@@ -20,6 +20,9 @@ router.get("/users", adminController.getAllUsers);
 // Get detailed user info with payment history
 router.get("/users/:id", adminController.getUserDetails);
 
+//delete users 
+router.delete("/users/:id", authenticate, adminController.deleteUser);
+
 // Revenue metrics endpoint
 router.get("/revenue", getRevenueMetrics);
 

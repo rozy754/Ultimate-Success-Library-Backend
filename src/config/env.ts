@@ -20,7 +20,7 @@ const env = {
   
   // URLs
   FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:3000",
-  BACKEND_URL: process.env.BACKEND_URL || "http://localhost:5000",
+  BACKEND_URL: process.env.BACKEND_URL || "https://ultimate-success-library-backend.onrender.com",
   
   // Email
   SMTP_HOST: process.env.SMTP_HOST || "",

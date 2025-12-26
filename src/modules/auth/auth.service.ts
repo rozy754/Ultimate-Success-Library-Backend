@@ -11,7 +11,7 @@ import {
 } from "../../utils/jwt";
 import { Response } from "express";
 import { PasswordResetToken } from "./passwordResetToken.model";
-import { sendMail } from "../../utils/mailer";
+import { sendPasswordResetMail } from "../../utils/mailer";
 
 export class AuthService {
   // ==============================
@@ -115,7 +115,10 @@ export class AuthService {
   // ==============================
   static async requestPasswordReset(email: string) {
     const user = await User.findOne({ email });
-    if (!user) return; // Always generic response (security)
+    if (!user) {
+      console.log("⚠️ USER NOT FOUND — MAIL NOT SENT");
+      return;
+    }
 
     const rawToken = crypto.randomBytes(32).toString("hex");
     const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
@@ -131,7 +134,7 @@ export class AuthService {
     });
 
     const resetUrl = `${env.FRONTEND_URL}/reset-password?token=${rawToken}`;
-    await sendMail(user.email, resetUrl);
+    await sendPasswordResetMail(user.email, resetUrl);
   }
 
   // ==============================

@@ -3,7 +3,8 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ISubscription extends Document {
   userId: mongoose.Types.ObjectId;
   plan: "Daily Pass" | "Weekly Pass" | "Monthly Pass" | string; // keep compatible
-  status: "Active" | "Expired";
+  status: "Active" | "Expired" | "Cancelled";
+  paymentMethod : string;
   startDate: Date;
   expiryDate: Date;
   razorpayOrderId: string;
@@ -21,10 +22,11 @@ const subscriptionSchema = new Schema<ISubscription>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     plan: { type: String, required: true },
-    status: { type: String, enum: ["Active", "Expired"], default: "Active" },
+    status: { type: String, enum: ["Active", "Expired", "Cancelled"], default: "Active" },
     startDate: { type: Date, required: true },
     expiryDate: { type: Date, required: true },
     razorpayOrderId: { type: String, required: true },
+    paymentMethod: { type: String, required: true },
     razorpayPaymentId: { type: String, required: true },
     razorpaySignature: { type: String, required: true },
     planId: { type: Schema.Types.ObjectId, default: null },

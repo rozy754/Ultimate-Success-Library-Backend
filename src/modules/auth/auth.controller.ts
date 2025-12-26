@@ -113,11 +113,13 @@ export const me = asyncHandler(async (req: Request, res: Response) => {
 // ==================== Forgot & Reset Password ==================== //
 
 // Forgot Password Controller
-export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
-   const parsed = validate<ForgotPasswordInput>(forgotPasswordSchema, req.body, res);
+export const forgotPassword = asyncHandler(async (req: Request, res: Response) => { 
+  const parsed = validate<ForgotPasswordInput>(forgotPasswordSchema, req.body, res);
 
-  if (!parsed) return;
-
+if (!parsed) {
+  console.log("❌ VALIDATION FAILED");
+  return;
+}
   await AuthService.requestPasswordReset(parsed.email);
 
   res.status(200).json({

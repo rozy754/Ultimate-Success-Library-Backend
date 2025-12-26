@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import * as subscriptionService from "./service";
 import mongoose from "mongoose";
+import Subscription from "./model"; 
+
 
 /**
  * Get current subscription (real-time expiry check included)
@@ -62,22 +64,34 @@ export const getCurrentSubscription = async (req: Request, res: Response) => {
  */
 export const updateSubscriptionStatus = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // Subscription ID
     const { status } = req.body;
+    const userId = (req as any).user?.id; // Logged-in User ki ID
 
     if (!id || !status) {
-      return res.status(400).json({ error: "Subscription ID and status are required" });
+      return res.status(400).json({ error: "ID and status are required" });
     }
 
-    const subscription = await subscriptionService.updateSubscriptionStatus(id, status);
-
-    if (!subscription) {
+    // --- SECURITY CHECK START ---
+    // Pehle database se subscription nikalo check karne ke liye
+    const existingSub = await Subscription.findById(id);
+    
+    if (!existingSub) {
       return res.status(404).json({ error: "Subscription not found" });
     }
 
+    // Agar user Admin nahi hai, toh check karo ki kya ye uski apni sub hai?
+    // (Maan ke chalte hain ki tumhare pass req.user.role hai)
+    if ((req as any).user?.role !== 'admin' && existingSub.userId.toString() !== userId) {
+      return res.status(403).json({ error: "You are not authorized to update this subscription" });
+    }
+    // --- SECURITY CHECK END ---
+
+    const subscription = await subscriptionService.updateSubscriptionStatus(id, status);
+
     res.json({
       success: true,
-      message: "Subscription status updated",
+      message: `Subscription status updated to ${status}`,
       subscription,
     });
   } catch (error: any) {

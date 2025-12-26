@@ -4,10 +4,10 @@ import { authenticate } from "../../middleware/auth"; // ✅ JWT middleware (maa
 
 const router = Router();
 
-// ✅ Get current subscription (real-time expiry check included)
+// Get current subscription (real-time expiry check included)
 router.get("/current", authenticate, subscriptionController.getCurrentSubscription);
 
-// ✅ Update subscription status (Admin use-case)
+// Update subscription status (Admin use-case) // user cancel bhi toh kr skta hai 
 router.patch("/:id/status", authenticate, subscriptionController.updateSubscriptionStatus);
 
 //payment history

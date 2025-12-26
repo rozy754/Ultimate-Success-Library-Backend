@@ -34,7 +34,7 @@ export const getCurrentSubscription = async (
  */
 export const updateSubscriptionStatus = async (
   subscriptionId: string,
-  status: "Active" | "Expired"
+  status: "Active" | "Expired" | "Cancelled"
 ): Promise<ISubscription | null> => {
   const subscription = await Subscription.findByIdAndUpdate(
     subscriptionId,
@@ -42,8 +42,10 @@ export const updateSubscriptionStatus = async (
     { new: true }
   );
 
-  if (subscription && status === "Expired") {
-    await User.findByIdAndUpdate(subscription.userId, { currentSubscription: null });
+  if (subscription && (status === "Expired" || status === "Cancelled")) {
+    await User.findByIdAndUpdate(subscription.userId, { 
+      currentSubscription: null 
+    });
   }
 
   return subscription;
